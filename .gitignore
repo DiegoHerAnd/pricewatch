@@ -1,0 +1,19 @@
+# Entorno
+.env
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Base de datos
+*.sqlite3
+
+# IDEs
+.idea/
+.vscode/
+
+# Huevos Python
+*.egg-info/
+dist/
+build/
