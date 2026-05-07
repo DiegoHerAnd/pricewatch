@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import products, categories, stores
+from app import products, categories, stores
 
 app = FastAPI(title="PriceWatch API", version="1.0.0")
 

@@ -1,7 +1,7 @@
-from app.core.database import SessionLocal
-from app.models.category import Category
-from app.models.store import Store
-from app.models.product import Product
+from app import SessionLocal
+from app import Category
+from app import Store
+from app import Product
 
 def run():
     db = SessionLocal()

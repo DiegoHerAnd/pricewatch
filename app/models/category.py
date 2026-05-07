@@ -2,7 +2,7 @@
 import uuid
 from sqlalchemy import String, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.core.database import Base
+from app import Base
 
 class Category(Base):
     __tablename__ = "categories"

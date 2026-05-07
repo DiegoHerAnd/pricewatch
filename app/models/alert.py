@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from sqlalchemy import String, Boolean, ForeignKey, DateTime, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app.core.database import Base
+from app import Base
 
 class Alert(Base):
     __tablename__ = "alerts"
