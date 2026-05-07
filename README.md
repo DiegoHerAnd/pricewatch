@@ -1,4 +1,4 @@
-# 🔍 PriceWatch
+# PriceWatch
 
 Herramienta de seguimiento de precios de productos en múltiples tiendas y plataformas.
 
@@ -14,4 +14,6 @@ Permite registrar productos de cualquier categoría (tecnología, ropa, hogar...
 ## Stack
 `PostgreSQL` · `Python` · `FastAPI` · `SQLAlchemy` · `Docker`
 
-> Proyecto de desarrollo progresivo. Actualmente en Fase 1: diseño e implementación del esquema de base de datos.
+<img width="1509" height="922" alt="Image" src="https://github.com/user-attachments/assets/9454dcde-ebbc-421d-acfa-677e91c45e02" />
+
+> Proyecto de desarrollo progresivo. Actualmente en Fase 2: API REST.
