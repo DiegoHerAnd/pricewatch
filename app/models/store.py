@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy import String, Boolean
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from app import Base
+from app.core.database import Base
 
 class Store(Base):
     __tablename__ = "stores"

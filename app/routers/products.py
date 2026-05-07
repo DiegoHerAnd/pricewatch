@@ -1,10 +1,47 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app import get_db
-from app import ProductCreate, ProductUpdate, ProductResponse
-from app import Product
+from app.core.dependencies import get_db
+from app.schemas.product import ProductCreate, ProductUpdate, ProductResponse
+from app.models.product import Product
+from datetime import datetime
+from app.models.price_history import PriceHistory
+from app.models.product_store_url import ProductStoreUrl
+from app.schemas.price_history import PriceHistoryPaginated
 
 router = APIRouter(prefix="/products", tags=["Products"])
+
+
+@router.get("/{product_id}/prices", response_model=PriceHistoryPaginated)
+def get_price_history(
+    product_id: str,
+    store_id:  str | None = None,      # ?store_id=uuid
+    from_date: datetime | None = None, # ?from_date=2024-01-01
+    to_date:   datetime | None = None, # ?to_date=2024-12-31
+    page:      int = 1,
+    limit:     int = 20,
+    db: Session = Depends(get_db)
+):
+    query = (
+        db.query(PriceHistory)
+        .join(ProductStoreUrl)
+        .filter(ProductStoreUrl.product_id == product_id)
+    )
+
+    if store_id:
+        query = query.filter(ProductStoreUrl.store_id == store_id)
+    if from_date:
+        query = query.filter(PriceHistory.scraped_at >= from_date)
+    if to_date:
+        query = query.filter(PriceHistory.scraped_at <= to_date)
+
+    total  = query.count()
+    data   = (query
+              .order_by(PriceHistory.scraped_at.desc())
+              .offset((page - 1) * limit)
+              .limit(limit)
+              .all())
+
+    return {"total": total, "page": page, "limit": limit, "data": data}
 
 @router.get("/", response_model=list[ProductResponse])
 def get_products(db: Session = Depends(get_db)):

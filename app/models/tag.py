@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy import String, Column, Table, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
-from app import Base
+from app.core.database import Base
 
 # Tabla intermedia muchos a muchos
 product_tags = Table(
