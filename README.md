@@ -14,6 +14,6 @@ Permite registrar productos de cualquier categoría (tecnología, ropa, hogar...
 ## Stack
 `PostgreSQL` · `Python` · `FastAPI` · `SQLAlchemy` · `Docker`
 
-<img width="1531" height="902" alt="Image" src="https://github.com/user-attachments/assets/94ea6192-c6d8-4e6f-95c0-76f354de5517" />
+<img width="1920" height="945" alt="Image" src="https://github.com/user-attachments/assets/3f771f7e-419e-4d6f-9b64-67a5b7b9ab41" />
 
 > Proyecto de desarrollo progresivo. Actualmente en Fase 2: API REST.
