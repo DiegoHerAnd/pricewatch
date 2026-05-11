@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.core.dependencies import get_db
 from app.schemas.product import ProductCreate, ProductUpdate, ProductResponse
@@ -7,12 +7,15 @@ from datetime import datetime
 from app.models.price_history import PriceHistory
 from app.models.product_store_url import ProductStoreUrl
 from app.schemas.price_history import PriceHistoryPaginated
+from app.core.limiter import limiter
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
 
 @router.get("/{product_id}/prices", response_model=PriceHistoryPaginated)
+@limiter.limit("30/minute")
 def get_price_history(
+    request: Request,
     product_id: str,
     store_id:  str | None = None,      # ?store_id=uuid
     from_date: datetime | None = None, # ?from_date=2024-01-01
@@ -44,18 +47,21 @@ def get_price_history(
     return {"total": total, "page": page, "limit": limit, "data": data}
 
 @router.get("/", response_model=list[ProductResponse])
-def get_products(db: Session = Depends(get_db)):
+@limiter.limit("30/minute")
+def get_products(request: Request, db: Session = Depends(get_db)):
     return db.query(Product).filter(Product.is_active == True).all()
 
 @router.get("/{product_id}", response_model=ProductResponse)
-def get_product(product_id: str, db: Session = Depends(get_db)):
+@limiter.limit("30/minute")
+def get_product(request: Request, product_id: str, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
     return product
 
 @router.post("/", response_model=ProductResponse, status_code=201)
-def create_product(data: ProductCreate, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def create_product(request: Request, data: ProductCreate, db: Session = Depends(get_db)):
     product = Product(**data.model_dump())
     db.add(product)
     db.commit()
@@ -63,7 +69,8 @@ def create_product(data: ProductCreate, db: Session = Depends(get_db)):
     return product
 
 @router.put("/{product_id}", response_model=ProductResponse)
-def update_product(product_id: str, data: ProductUpdate, db: Session = Depends(get_db)):
+@limiter.limit("10/minute")
+def update_product(request: Request, product_id: str, data: ProductUpdate, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
@@ -74,7 +81,8 @@ def update_product(product_id: str, data: ProductUpdate, db: Session = Depends(g
     return product
 
 @router.delete("/{product_id}", status_code=204)
-def delete_product(product_id: str, db: Session = Depends(get_db)):
+@limiter.limit("5/minute")
+def delete_product(request: Request, product_id: str, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
