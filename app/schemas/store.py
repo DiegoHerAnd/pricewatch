@@ -1,10 +1,10 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 from uuid import UUID
 
 class StoreCreate(BaseModel):
-    name:     str
-    base_url: str
-    currency: str = "EUR"
+    name:     str = Field(example="Thomann")
+    base_url: str = Field(example="https://www.thomann.es")
+    currency: str = Field(default="EUR", example="EUR")
 
     @field_validator("currency")
     def currency_valid(cls, v):

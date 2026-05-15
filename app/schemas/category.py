@@ -1,12 +1,12 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, Field, field_validator
 from uuid import UUID
 import re
 
 class CategoryCreate(BaseModel):
-    name:        str
-    slug:        str
-    description: str | None = None
-    parent_id:   UUID | None = None
+    name:        str            = Field(example="Guitarras")
+    slug:        str            = Field(example="guitarras")
+    description: str | None     = Field(default=None, example="Guitarras eléctricas y acústicas")
+    parent_id:   UUID | None    = Field(default=None, example=None)
 
     @field_validator("slug")
     def slug_format(cls, v):

@@ -12,7 +12,11 @@ from app.core.limiter import limiter
 router = APIRouter(prefix="/products", tags=["Products"])
 
 
-@router.get("/{product_id}/prices", response_model=PriceHistoryPaginated)
+@router.get("/{product_id}/prices",
+            response_model=PriceHistoryPaginated,
+            summary = "Historial de precios",
+            description = "Devuelve el historial de precios de un producto con soporte de filtros por tienda, rango de fecchas y paginación."
+            )
 @limiter.limit("30/minute")
 def get_price_history(
     request: Request,
@@ -46,12 +50,20 @@ def get_price_history(
 
     return {"total": total, "page": page, "limit": limit, "data": data}
 
-@router.get("/", response_model=list[ProductResponse])
+@router.get("/",
+            response_model=list[ProductResponse],
+            summary = "Listar productos",
+            description = "Devuelve todos los productos activos registrados en el sistema."
+            )
 @limiter.limit("30/minute")
 def get_products(request: Request, db: Session = Depends(get_db)):
     return db.query(Product).filter(Product.is_active == True).all()
 
-@router.get("/{product_id}", response_model=ProductResponse)
+@router.get("/{product_id}",
+            response_model=ProductResponse,
+            summary = "Obtener productos",
+            description = "Devuelve el detalle de un producto concreto por su ID."
+            )
 @limiter.limit("30/minute")
 def get_product(request: Request, product_id: str, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()
@@ -59,7 +71,12 @@ def get_product(request: Request, product_id: str, db: Session = Depends(get_db)
         raise HTTPException(status_code=404, detail="Producto no encontrado")
     return product
 
-@router.post("/", response_model=ProductResponse, status_code=201)
+@router.post("/",
+             response_model=ProductResponse,
+             status_code=201,
+             summary = "Crear producto",
+             description = "Registra un nuevo producto asociado a una categoría existente."
+             )
 @limiter.limit("10/minute")
 def create_product(request: Request, data: ProductCreate, db: Session = Depends(get_db)):
     product = Product(**data.model_dump())
@@ -68,7 +85,11 @@ def create_product(request: Request, data: ProductCreate, db: Session = Depends(
     db.refresh(product)
     return product
 
-@router.put("/{product_id}", response_model=ProductResponse)
+@router.put("/{product_id}",
+            response_model=ProductResponse,
+            summary = "Actualizar producto",
+            description = "Actualiza los campos de un producto existente. Solo se modifican los campos enviados."
+            )
 @limiter.limit("10/minute")
 def update_product(request: Request, product_id: str, data: ProductUpdate, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()
@@ -80,7 +101,11 @@ def update_product(request: Request, product_id: str, data: ProductUpdate, db: S
     db.refresh(product)
     return product
 
-@router.delete("/{product_id}", status_code=204)
+@router.delete("/{product_id}",
+               status_code=204,
+               summary ="Eliminar producto",
+               description = "Desactiva un producto (soft delete). No se borra físicamente de la base de datos."
+               )
 @limiter.limit("5/minute")
 def delete_product(request: Request, product_id: str, db: Session = Depends(get_db)):
     product = db.query(Product).filter(Product.id == product_id).first()

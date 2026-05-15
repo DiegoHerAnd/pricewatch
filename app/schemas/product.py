@@ -1,12 +1,12 @@
-from pydantic import BaseModel, field_validator, HttpUrl
+from pydantic import BaseModel, Field, field_validator, HttpUrl
 from uuid import UUID
 
 class ProductCreate(BaseModel):
-    name:        str
-    description: str | None = None
-    brand:       str | None = None
-    image_url:   str | None = None
-    category_id: UUID
+    name:        str         = Field(example="Larry Carlton L7 BK")
+    description: str | None  = Field(default=None, example="Guitarra eléctrica semiacústica")
+    brand:       str | None  = Field(default=None, example="Larry Carlton")
+    image_url:   str | None  = Field(default=None, example="https://www.thomann.es/larry_carlton_l7_bk_new_gen.htm")
+    category_id: UUID        = Field(example="dce8654b-958e-4865-a49e-3ce55ffd9b71")
 
     @field_validator("name")
     def name_not_empty(cls, v):
