@@ -1,2 +1,19 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-*
+# Entorno virtual
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Variables de entorno
+.env
+
+# IDEs
+.idea/
+.vscode/
+
+# Base de datos
+*.sqlite3
