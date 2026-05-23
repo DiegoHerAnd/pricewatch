@@ -1,3 +1,4 @@
+from app.models.product_store_url import ProductStoreUrl
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.core.dependencies import get_db
@@ -113,3 +114,21 @@ def delete_product(request: Request, product_id: str, db: Session = Depends(get_
         raise HTTPException(status_code=404, detail="Producto no encontrado")
     product.is_active = False   # soft delete, no borrado real
     db.commit()
+
+@router.post("/{product_id}/stores", status_code=201)
+def add_store_url(
+    product_id: str,
+    store_id:   str,
+    url:        str,
+    db: Session = Depends(get_db)
+):
+    psu = ProductStoreUrl(
+        product_id=product_id,
+        store_id=store_id,
+        url=url,
+        is_active=True
+    )
+    db.add(psu)
+    db.commit()
+    db.refresh(psu)
+    return {"id": str(psu.id), "product_id": product_id, "store_id": store_id, "url": url}
